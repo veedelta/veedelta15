@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recibo - Metal Fênix Metalon</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #1b5e20;
+        }
+        form {
+            background-color: #c8e6c9;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            margin: auto;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="text"], input[type="number"], input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #81c784;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #388e3c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Metal Fênix Metalon</h1>
+    <h2>METALONS E MÓVEIS PROJETADOS</h2>
+    <form id="reciboForm">
+        <label for="nome">Nome do Pagante:</label>
+        <input type="text" id="nome" placeholder="Digite o nome do pagante" required>
+        
+        <label for="valor">Valor (R$):</label>
+        <input type="number" id="valor" placeholder="Digite o valor" step="0.01" required>
+        
+        <label for="referente">Referente a:</label>
+        <input type="text" id="referente" placeholder="Digite o que é referente ao valor" required>
+        
+        <label for="cidade">Cidade:</label>
+        <input type="text" id="cidade" placeholder="Digite a cidade" required>
+        
+        <label for="data">Data:</label>
+        <input type="date" id="data" required>
+        
+        <button type="button" onclick="gerarPDF()">Gerar PDF</button>
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        function gerarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const nome = document.getElementById('nome').value;
+            const valor = parseFloat(document.getElementById('valor').value).toFixed(2).replace('.', ',');
+            const referente = document.getElementById('referente').value;
+            const cidade = document.getElementById('cidade').value;
+            const dataInput = document.getElementById('data').value;
+            
+            // Formatação da data para o padrão brasileiro
+            const dataFormatada = dataInput.split('-').reverse().join('/');
+
+            doc.setFontSize(16);
+            doc.text('Metal Fênix Metalon', 105, 20, { align: 'center' });
+            doc.setFontSize(12);
+            doc.text('METALONS E MÓVEIS PROJETADOS', 105, 28, { align: 'center' });
+            
+            doc.setFontSize(14);
+            doc.text(`Nome do Pagante: ${nome}`, 20, 50);
+            doc.text(`Valor: R$ ${valor}`, 20, 60);
+            doc.text(`Referente a: ${referente}`, 20, 70);
+            doc.text(`Cidade: ${cidade}`, 20, 80);
+            doc.text(`Data: ${dataFormatada}`, 20, 90);
+
+            // Texto adicional
+            doc.setFontSize(12);
+            doc.text('Declaro o referido acima com total veracidade para devolvidos fins.', 20, 100);
+            doc.text('Recebedor:', 20, 110);
+            doc.text('Vandeilson Alexandre da Silva', 20, 120);
+            doc.text('CPF/CIN: 083.019.664-16', 20, 130);
+
+            doc.save(`Recibo_${nome}.pdf`);
+        }
+    </script>
+</body>
+  </html>
